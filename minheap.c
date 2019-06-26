@@ -106,12 +106,21 @@ void insert_into_heap(struct b_tree_meta_t *tree, struct node_t *node)
 		printf("Bottom level, simbol, weight is %d, %c, %d\n", level, temp_node->s, temp_node->w);
 		
 		// After finding last level node, we will know in which level  new node should be inserted. SO we need to traverse all the parent node level and find the node with no child.
-		
+		// WIP
+		printf("Traversing tree in breadth first order for seeking last level node\n");
+		level--;
+		find_bottom_leaf_node(tree->root, level, &temp_node);
 	}
 }
 
+// Level order traversing with stop constraint[child nodes == NULL]
+int find_bottom_leaf_node(struct b_tree_meta_t *tree, unsigned int level, struct node_t **temp_node)
+{
+	//TODO:
+}
+
 // temp_node = to find address of last node
-int level_order_traversing(struct node_t *root, int level, struct node_t **temp_node, int display_flag)
+int level_order_traversing(struct node_t *root, unsigned int level, struct node_t **temp_node, int display_flag)
 {
 	if(root == NULL)
 	{
