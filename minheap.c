@@ -164,16 +164,26 @@ int find_bottom_leaf_node(struct node_t *root, unsigned int level, struct node_t
 	}
 	return 1;
 }
+//									TREE
+// 								    1
+// 				   2						    3
+// 			4		 	   5				6				  7----------temp |___SWAP
+// 	 8		9		10	11	 12		13	 14		15-------node |
 
-// node is bottom node
-void heapify_up(struct node_t *node)
+void heapify_up(struct b_tree_meta_t *tree)
 {
+	struct node_t *node = tree->bottom;
 	if(node != NULL)
 	{
-		if(node->parent->w > node->w)
+		while(node->parent != NULL && node->parent->w > node->w)
 		{
-			struct node_t *temp = ;
-			
+			struct node_t *temp = node->parent;
+			if(temp->parent != NULL)
+			{
+				if(temp->parent->left->s == temp->
+			}
+			node->parent = node;
+			tree->bottom =
 		}
 	}
 }
