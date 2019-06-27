@@ -164,26 +164,46 @@ int find_bottom_leaf_node(struct node_t *root, unsigned int level, struct node_t
 	}
 	return 1;
 }
-//									TREE
-// 								    1
-// 				   2						    3
-// 			4		 	   5				6				  7----------temp |___SWAP
-// 	 8		9		10	11	 12		13	 14		15-------node |
+//								TREE
+//								1
+//					2						3
+//			4				5		6				7		-------temp |___SWAP
+//		8	9			10	11		12	13		14	15		-------node |
 
 void heapify_up(struct b_tree_meta_t *tree)
 {
 	struct node_t *node = tree->bottom;
 	if(node != NULL)
 	{
+		if(node->parent != NULL && node->parent->w > node->w)
+		{
+			tree->bottom = tree->bottom->parent;
+		}
 		while(node->parent != NULL && node->parent->w > node->w)
 		{
 			struct node_t *temp = node->parent;
 			if(temp->parent != NULL)
 			{
-				if(temp->parent->left->s == temp->
+				if(temp->parent->left->s == temp->s)
+				{
+					temp->parent->left = node;
+				}
+				else if(temp->parent->right->s == temp->s)
+				{
+					temp->parent->right = node;
+				}
+				node->parent = temp->parent;
 			}
-			node->parent = node;
-			tree->bottom =
+			temp->parent = node;
+			// Not sure about bellow 2 if's TODO:
+			if(temp->left->s == node->s)
+			{
+				node->left = temp->left;
+			}
+			if(temp->right->s == node->s)
+			{
+				node->right = temp->right;
+			}
 		}
 	}
 }
