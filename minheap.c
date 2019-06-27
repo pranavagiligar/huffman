@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
 	insert_into_heap(tree, create_node('d', 4));
 	insert_into_heap(tree, create_node('e', 5));
 	insert_into_heap(tree, create_node('f', 6));
-	insert_into_heap(tree, create_node('g', 7));
+	insert_into_heap(tree, create_node('g', 0));
+	//heapify_up(tree);
 
 	printf("\nTraversing tree to display tree in breadth First Order\n");
 	unsigned int level = 1;
@@ -108,7 +109,7 @@ void insert_into_heap(struct b_tree_meta_t *tree, struct node_t *node)
 		unsigned int total = 0;
 		while((total = level_order_traversing(tree->root, level, 0)))
 		{
-			if(total == (unsigned int) pow(2, level - 1))
+			if(total == ((unsigned int) pow(2, level - 1)))
 			{
 				level++;
 			}
@@ -175,12 +176,15 @@ void heapify_up(struct b_tree_meta_t *tree)
 	struct node_t *node = tree->bottom;
 	if(node != NULL)
 	{
+		printf("inside firstif\n");
 		if(node->parent != NULL && node->parent->w > node->w)
 		{
 			tree->bottom = tree->bottom->parent;
 		}
+		printf("before while\n");
 		while(node->parent != NULL && node->parent->w > node->w)
 		{
+			printf("inside while\n");
 			struct node_t *temp = node->parent;
 			if(temp->parent != NULL)
 			{
@@ -198,12 +202,37 @@ void heapify_up(struct b_tree_meta_t *tree)
 			// Not sure about bellow 2 if's TODO:
 			if(temp->left->s == node->s)
 			{
-				node->left = temp->left;
+				struct node_t *past_sibling_node = temp->right;
+				temp->left = node->left;
+				temp->right = node->right;
+				node->right = past_sibling_node;
+				past_sibling_node->parent = node;
+				if(temp->left != NULL)
+				{
+					temp->left->parent = temp;
+				}
+				if(temp->right != NULL)
+				{
+					temp->right->parent = temp;
+				}
 			}
 			if(temp->right->s == node->s)
 			{
-				node->right = temp->right;
+				struct node_t *past_sibling_node = temp->left;
+				temp->left = node->left;
+				temp->right = node->right;
+				node->left = past_sibling_node;
+				past_sibling_node->parent = node;
+				if(temp->left != NULL)
+				{
+					temp->left->parent = temp;
+				}
+				if(temp->right != NULL)
+				{
+					temp->right->parent = temp;
+				}
 			}
+			node = temp;
 		}
 	}
 }

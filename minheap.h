@@ -8,4 +8,5 @@ void insert_into_heap(struct b_tree_meta_t *tree, struct node_t *node);
 void delete_from_heap(struct b_tree_meta_t *tree, struct node_t *node);
 int find_bottom_leaf_node(struct node_t *root, unsigned int level, struct node_t **temp_node);
 int level_order_traversing(struct node_t *root, unsigned int level, int display_flag);
+void heapify_up(struct b_tree_meta_t *tree);
 void refresh();
