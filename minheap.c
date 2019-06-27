@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "minheap.h"
 
 int main(int argc, char *argv[])
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
 
 	while(level_order_traversing(tree->root, level, &temp_node, 1))
 	{
+		printf("\n");
 		level++;
 	}
 	///////////////////
@@ -73,7 +75,7 @@ void insert_into_heap(struct b_tree_meta_t *tree, struct node_t *node)
 
 	if(tree->root == NULL)
 	{
-		printf("Inserting first node \n");
+		printf("Inserting first node [%c]\n", node->s);
 		tree->root = node;
 		tree->bottom = node;
 		node->parent = NULL;
@@ -82,7 +84,7 @@ void insert_into_heap(struct b_tree_meta_t *tree, struct node_t *node)
 	{
 		if(tree->bottom == tree->root)
 		{
-			printf("Inserting first left child node [%c]\n", node->s);
+			printf("Inserting first left child node [%c]\n\n", node->s);
 			tree->bottom = node;
 			tree->root->left = node;
 			node->parent = tree->root;
@@ -92,7 +94,7 @@ void insert_into_heap(struct b_tree_meta_t *tree, struct node_t *node)
 		{
 			if(tree->bottom->parent->right == NULL)
 			{
-				printf("Inserting right node of parent node [%c]\n", node->s);
+				printf("Inserting right node[%c] to parent node[%c]\n\n", node->s, tree->bottom->parent->s);
 				tree->bottom->parent->right = node;
 				// node->parent = tree->bottom->parent->right; TODO:
 				node->parent = tree->bottom->parent;
@@ -101,35 +103,44 @@ void insert_into_heap(struct b_tree_meta_t *tree, struct node_t *node)
 			}
 		}
 		// traverse tree and find out correct position
-		printf("\nTraversing tree in breadth first order for seeking last level node\n");
+		printf("Traversing tree in breadth first order for seeking last level node\n");
 		unsigned int level = 1;
 		struct node_t *temp_node;
-
-		while(level_order_traversing(tree->root, level, &temp_node, 0))
+		unsigned int total = 0;
+		while((total = level_order_traversing(tree->root, level, &temp_node, 0)))
 		{
-			level++;
+			if(total == (unsigned int) pow(2, level - 1))
+			{
+				level++;
+			}
+			else
+			{
+				break;
+			}
 		}
-		// printf("Bottom level, simbol, weight is %d, %c, %d\n", level, temp_node->s, temp_node->w);
+		printf("Bottom level, simbol, weight is %d, %c, %d\n", level, temp_node->s, temp_node->w);
 
 		// After finding last level node, we will know in which level  new node
 		// should be inserted. SO we need to traverse all the parent node level
 		// and find the node with no child.
 		// WIP
-		printf("Traversing tree in breadth first order for seeking last level[%d] childless node\n", level);
+		printf("Traversing tree in breadth first order for seeking last level[%d] childless node\n", level-1);
 		level = level - 1;
 		if(find_bottom_leaf_node(tree->root, level, &temp_node))
 		{
-			printf("\nDid'nt got any childless node !\n");
+			printf("Did'nt got any childless node !\n");
 		}
 		else
 		{
-			printf("\nGot the Childless Bottom Leaf (level=%d, simbol=%c, weight=%d)\n",
+			printf("Got the Childless Bottom Leaf (level=%d, simbol=%c, weight=%d)\n",
 			 					level, temp_node->s, temp_node->w);
 			temp_node->left = node;
 			node->parent = temp_node;
 			tree->bottom = node;
+			printf("Inserting as left node[%c] to parent node[%c]\n", node->s, temp_node->s);
 		}
 	}
+	printf("\n");
 }
 
 // Level order traversing with stop constraint[child nodes == NULL]
@@ -176,7 +187,7 @@ int level_order_traversing(struct node_t *root,
 	int left = level_order_traversing(root->left, level - 1, temp_node, display_flag);
 	int right = level_order_traversing(root->right, level - 1, temp_node, display_flag);
 
-	return left || right;
+	return left + right;
 }
 
 void delete_from_heap(struct b_tree_meta_t *tree, struct node_t *node)
