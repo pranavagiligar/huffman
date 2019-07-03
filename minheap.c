@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	insert_into_heap(tree, create_node('e', 5));
 	insert_into_heap(tree, create_node('f', 6));
 	insert_into_heap(tree, create_node('g', 0));
-	//heapify_up(tree);
+	heapify_up(tree);
 
 	printf("\nTraversing tree to display tree in breadth First Order\n");
 	unsigned int level = 1;

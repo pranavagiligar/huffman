@@ -1,0 +1,10 @@
+1. Google Address sanitizer
+        gcc -fsanitize=address -g minheap.c -lm
+
+2. Valgrind
+        gcc -g minheap.c -lm
+        valgrind --leak-check=full --dsymutil=yes ./a.out
+
+3. Dr. Memory [Windows and Linux]
+        gcc -g minheap.c -lm
+        drmemory -- a.out
