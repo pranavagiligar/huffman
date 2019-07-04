@@ -12,14 +12,28 @@ int main(int argc, char *argv[])
 	struct b_tree_meta_t *tree = create_heap();
 
 	// testing statements and logics and i/o ops
-	insert_into_heap(tree, create_node('a', 1));
-	insert_into_heap(tree, create_node('b', 2));
-	insert_into_heap(tree, create_node('c', 3));
-	insert_into_heap(tree, create_node('d', 4));
-	insert_into_heap(tree, create_node('e', 5));
-	insert_into_heap(tree, create_node('f', 6));
-	insert_into_heap(tree, create_node('g', 0));
-	heapify_up(tree);
+	insert_and_heapifyup(tree, create_node('a', 7));
+	insert_and_heapifyup(tree, create_node('b', 6));
+	insert_and_heapifyup(tree, create_node('c', 5));
+	insert_and_heapifyup(tree, create_node('d', 4));
+	insert_and_heapifyup(tree, create_node('e', 3));
+	insert_and_heapifyup(tree, create_node('f', 2));
+	insert_and_heapifyup(tree, create_node('g', 1));
+	/*insert_and_heapifyup(tree, create_node('a', 1));
+	insert_and_heapifyup(tree, create_node('b', 2));
+	insert_and_heapifyup(tree, create_node('c', 3));
+	insert_and_heapifyup(tree, create_node('d', 4));
+	insert_and_heapifyup(tree, create_node('e', 5));
+	insert_and_heapifyup(tree, create_node('f', 6));
+	insert_and_heapifyup(tree, create_node('g', 7));
+	insert_and_heapifyup(tree, create_node('h', 8));
+	insert_and_heapifyup(tree, create_node('i', 9));
+	insert_and_heapifyup(tree, create_node('j', 10));
+	insert_and_heapifyup(tree, create_node('k', 11));
+	insert_and_heapifyup(tree, create_node('l', 12));
+	insert_and_heapifyup(tree, create_node('m', 13));
+	insert_and_heapifyup(tree, create_node('n', 14));
+	insert_and_heapifyup(tree, create_node('o', 15));*/
 
 	printf("\nTraversing tree to display tree in breadth First Order\n");
 	unsigned int level = 1;
@@ -69,6 +83,13 @@ void destroy_heap(struct node_t *root, int display_flag)
 		printf("%c\t", root->s);
 	}
 	free(root);
+}
+
+
+void insert_and_heapifyup(struct b_tree_meta_t *tree, struct node_t *node)
+{
+	insert_into_heap(tree, node);
+	heapify_up(tree);	
 }
 
 void insert_into_heap(struct b_tree_meta_t *tree, struct node_t *node)
@@ -179,7 +200,7 @@ void heapify_up(struct b_tree_meta_t *tree)
 		printf("inside firstif\n");
 		if(node->parent != NULL && node->parent->w > node->w)
 		{
-			tree->bottom = tree->bottom->parent;
+			tree->bottom = node->parent;
 		}
 		printf("before while\n");
 		while(node->parent != NULL && node->parent->w > node->w)
@@ -196,17 +217,19 @@ void heapify_up(struct b_tree_meta_t *tree)
 				{
 					temp->parent->right = node;
 				}
-				node->parent = temp->parent;
-			}
+			} 
+			node->parent = temp->parent;
 			temp->parent = node;
-			// Not sure about bellow 2 if's TODO:
-			if(temp->left->s == node->s)
+			if(temp->left != NULL && temp->left->s == node->s)
 			{
 				struct node_t *past_sibling_node = temp->right;
 				temp->left = node->left;
 				temp->right = node->right;
 				node->right = past_sibling_node;
-				past_sibling_node->parent = node;
+				if(past_sibling_node != NULL)
+				{
+					past_sibling_node->parent = node;
+				}
 				if(temp->left != NULL)
 				{
 					temp->left->parent = temp;
@@ -215,14 +238,18 @@ void heapify_up(struct b_tree_meta_t *tree)
 				{
 					temp->right->parent = temp;
 				}
+				node->left = temp;
 			}
-			if(temp->right->s == node->s)
+			else if(temp->right != NULL && temp->right->s == node->s)
 			{
 				struct node_t *past_sibling_node = temp->left;
 				temp->left = node->left;
 				temp->right = node->right;
 				node->left = past_sibling_node;
-				past_sibling_node->parent = node;
+				if(past_sibling_node != NULL)
+				{
+					past_sibling_node->parent = node;
+				}
 				if(temp->left != NULL)
 				{
 					temp->left->parent = temp;
@@ -231,8 +258,12 @@ void heapify_up(struct b_tree_meta_t *tree)
 				{
 					temp->right->parent = temp;
 				}
+				node->right = temp;
 			}
-			node = temp;
+		}
+		if(node->parent == NULL)
+		{
+			tree->root = node;
 		}
 	}
 }
